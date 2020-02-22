@@ -2,17 +2,18 @@
  *
  * File Name:  Operator.h
  * Author: Marco Borth
- * Assignment:   EECS-560 Lab 3 - Implementation of Hash Table (Closed Hashing)
+ * Assignment:   EECS-560 Lab 4 – Implementation of Binary Tree
  * Description:  Operator Class is defined.
- * Date: 2/11/20
+ * Date: 2/22/20
  *
  ---------------------------------------------------------------------------- */
 
 #ifndef OPERATOR_H
 #define OPERATOR_H
 
+#include "BinaryTree.h"
 #include "LinkedList.h"
-#include "User.h"
+#include "Movie.h"
 #include <string>
 #include <stdexcept>
 using namespace std;
@@ -21,27 +22,16 @@ class Operator
 {
 private:
   int option;
-  int hashTableLength;
-  int hashTableLoadFactor;
-  int hashValue;
 
   string file;
+  string stars;
 
-  string uname;
-  string pword;
-  string uParse;
-  string pParse;
+  string tagline;
+  double review;
 
-  bool placedLinear;
-  bool placedQuadratic;
+  BinaryTree<Movie*> IMDB;
 
-  LinkedList<User*> LinearTable;
-  LinkedList<User*> QuadraticTable;
-
-  LinkedList<User*> tempLinear;
-  LinkedList<User*> tempQuadratic;
-
-  User* newUser;
+  Movie* newMovie;
 
 public:
 /**
@@ -56,19 +46,9 @@ public:
 */
   void printCommands();
 
-  void inputUsername(string parse);
+  void inputTitle(string parse);
 
-  void parseUsername(string parse);
-
-  void parsePassword(string parse);
-
-  int hashKey(string passkey);
-
-  void rehashTables();
-
-  void insertRecord(string table);
-
-  void removeRecord(string table);
+  void parseTitle(string parse);
 
 /*
 * @pre filename is a string.

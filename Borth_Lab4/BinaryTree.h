@@ -2,15 +2,16 @@
  *
  * File Name:  BinaryTree.h
  * Author: Marco Borth
- * Assignment:   EECS-268 Lab 10 Program
+ * Assignment:   EECS-560 Lab 4 – Implementation of Binary Tree
  * Description:  BinaryTree Template Class is defined.
- * Date: 5/9/19
+ * Date: 2/22/20
  *
  ---------------------------------------------------------------------------- */
 
 #ifndef BINARY_TREE_H
 #define BINARY_TREE_H
 
+#include "LinkedList.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -51,6 +52,12 @@ public:
 
 /*
 * @pre none.
+* @post isEmpty returns false if m_size > 0, returns true otherwise.
+*/
+  bool isFull() const;
+
+/*
+* @pre none.
 * @post getNumberOfNodes returns m_size - 1.
 */
   int getNumberOfNodes() const;
@@ -82,13 +89,15 @@ public:
 */
   void clear();
 
-  LinkedList<T> preOrder();
+  void print();
 
-  LinkedList<T> inOrder();
+  void preOrder();
 
-  LinkedList<T> postOrder();
+  void inOrder();
 
-  LinkedList<T> levelOrder();
+  void postOrder();
+
+  void levelOrder();
 };
 
 #include "BinaryTree.cpp"

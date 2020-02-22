@@ -2,26 +2,36 @@
  *
  * File Name:  BinaryTree.cpp
  * Author: Marco Borth
- * Assignment:   EECS-268 Lab 10 Program
+ * Assignment:   EECS-560 Lab 4 – Implementation of Binary Tree
  * Description:  BinaryTree methods are defined.
- * Date: 5/9/19
+ * Date: 2/22/20
  *
  ---------------------------------------------------------------------------- */
 
 template <typename T>
 BinaryTree<T>::BinaryTree() {
-	m_nodes = myTree.getLength();
+	m_nodes = 0;
 }
 
 template <typename T>
 BinaryTree<T>::~BinaryTree() {
 	clear();
-	delete myTree;
 }
 
 template <typename T>
 bool BinaryTree<T>::isEmpty() const {
 	return myTree.isEmpty();
+}
+
+template <typename T>
+bool BinaryTree<T>::isFull() const {
+	int h = getHeight();
+	int maxNodes = 2 ^(h+1) - 1;
+
+	if(myTree.getLength() == maxNodes)
+		return true;
+	else
+		return false;
 }
 
 template <typename T>
@@ -32,10 +42,9 @@ int BinaryTree<T>::getNumberOfNodes() const {
 
 template <typename T>
 int BinaryTree<T>::getHeight() const {
-	m_nodes = myTree.getLength();
 	int height = 0;
 
-	while (2 * height < m_size - 1)
+	while (2 * height < myTree.getLength() - 1)
 		height++;
 
 	return height;
@@ -45,6 +54,16 @@ template <typename T>
 void BinaryTree<T>::add(T data) {
 	myTree.insert(myTree.getLength() + 1, data);
 	m_nodes = myTree.getLength();
+}
+
+template <typename T>
+void BinaryTree<T>::print() {
+	for(int i = 1; i <= orderList.getLength(); i++) {
+		cout << orderList.getEntry(i)->getTitle();
+		if(i != orderList.getLength())
+			cout << ", ";
+	}
+	cout << "\n";
 }
 
 template <typename T>
@@ -65,7 +84,7 @@ void BinaryTree<T>::remove() {
 }
 
 template <typename T>
-LinkedList<T> BinaryTree<T>::preOrder() {
+void BinaryTree<T>::preOrder() {
 	if (!isEmpty()) {
 		orderList.clear();
 		int i = 1;
@@ -73,7 +92,6 @@ LinkedList<T> BinaryTree<T>::preOrder() {
 		orderList.insert(i, myTree.getEntry(i));
 		preOrderRec(k);
 		preOrderRec(k + 1);
-		return orderList;
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
 	}
@@ -90,7 +108,7 @@ void BinaryTree<T>::preOrderRec(int i) {
 }
 
 template <typename T>
-LinkedList<T> BinaryTree<T>::inOrder() {
+void BinaryTree<T>::inOrder() {
 	if (!isEmpty()) {
 		orderList.clear();
 		int i = 1;
@@ -98,7 +116,6 @@ LinkedList<T> BinaryTree<T>::inOrder() {
 		inOrderRec(k);
 		orderList.insert(i, myTree.getEntry(i));
 		inOrderRec(k + 1);
-		return orderList;
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
 	}
@@ -115,7 +132,7 @@ void BinaryTree<T>::inOrderRec(int i) {
 }
 
 template <typename T>
-LinkedList<T> BinaryTree<T>::postOrder() {
+void BinaryTree<T>::postOrder() {
 	if (!isEmpty()) {
 		orderList.clear();
 		int i = 1;
@@ -123,7 +140,6 @@ LinkedList<T> BinaryTree<T>::postOrder() {
 		postOrderRec(k);
 		postOrderRec(k + 1);
 		orderList.insert(i, myTree.getEntry(i));
-		return orderList;
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
 	}
@@ -140,12 +156,11 @@ void BinaryTree<T>::postOrderRec(int i) {
 }
 
 template <typename T>
-LinkedList<T> BinaryTree<T>::levelOrder() {
+void BinaryTree<T>::levelOrder() {
 	if (!isEmpty()) {
 		orderList.clear();
 		for (int i = 1; i <= myTree.getLength(); i++)
 			orderList.insert(i, myTree.getEntry(i));
-		return orderList;
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
 	}
