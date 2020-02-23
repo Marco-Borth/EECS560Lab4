@@ -272,6 +272,18 @@ void Operator::run() {
     }
   } while(option != 11);
 
+  do {
+    try {
+      if(!IMDB.isEmpty()) {
+        IMDB.remove();
+
+        IMDB.removeTemp();
+      }
+    } catch (runtime_error) {
+
+    }
+  } while(!IMDB.isEmpty());
+
   tagline = "\0";
   review = 0;
 
