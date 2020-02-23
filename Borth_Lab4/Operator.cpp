@@ -100,14 +100,14 @@ void Operator::run() {
         } catch (runtime_error) {
           MovieTitleInputFailures++;
         }
-        
+
       }
     }
 
     if(MovieTitleInputFailures > 0)
       cout << "ERROR! Invalid Input for Movie Titles Detected: " << MovieTitleInputFailures << "\n";
 
-    if(RatingInputFailures > 0)
+    if(RatingInputFailures > 1)
       cout << "ERROR! Invalid Input for Movie Ratings Detected: " << RatingInputFailures << "\n";
   }
 
@@ -387,7 +387,37 @@ void Operator::run() {
           }
           */
         }
-        // 5- PrintMovies - Complete!
+        // 7- Postorder - Complete!
+        else if (option == 7) {
+          if(IMDB.isEmpty()) {
+            cout << "ERROR! Tree is Empty!\n\n";
+          } else {
+            cout << "\nPrinting List of Movies in...\n\nPre-Order - ";
+            IMDB.preOrder();
+            IMDB.print();
+          }
+        }
+        // 8- Postorder - Complete!
+        else if (option == 8) {
+          if(IMDB.isEmpty()) {
+            cout << "ERROR! Tree is Empty!\n\n";
+          } else {
+            cout << "\nPrinting List of Movies in...\n\nPost-Order - ";
+            IMDB.postOrder();
+            IMDB.print();
+          }
+        }
+        // 9- Inorder - Complete!
+        else if (option == 9) {
+          if(IMDB.isEmpty()) {
+            cout << "ERROR! Tree is Empty!\n\n";
+          } else {
+            cout << "\nPrinting List of Movies in...\n\nIn-Order - ";
+            IMDB.inOrder();
+            IMDB.print();
+          }
+        }
+        // 10- Levelorder - Complete!
         else if (option == 10) {
           if(IMDB.isEmpty()) {
             cout << "ERROR! Tree is Empty!\n\n";

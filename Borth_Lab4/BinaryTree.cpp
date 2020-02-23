@@ -54,6 +54,12 @@ template <typename T>
 void BinaryTree<T>::add(T data) {
 	myTree.insert(myTree.getLength() + 1, data);
 	m_nodes = myTree.getLength();
+
+	newT = new Movie();
+	newT->setTitle(myTree.getEntry(myTree.getLength())->getTitle());
+	newT->setRating(myTree.getEntry(myTree.getLength())->getRating());
+	orderList.insert(orderList.getLength() + 1, newT);
+	newT = nullptr;
 }
 
 template <typename T>
@@ -63,7 +69,7 @@ void BinaryTree<T>::print() {
 		if(i != orderList.getLength())
 			cout << ", ";
 	}
-	cout << "\n";
+	cout << "\n\n";
 }
 
 template <typename T>
@@ -76,8 +82,16 @@ void BinaryTree<T>::clear() {
 template <typename T>
 void BinaryTree<T>::remove() {
 	if (!isEmpty()) {
+		newT = myTree.getEntry(orderList.getLength());
 		myTree.remove(myTree.getLength());
+		delete newT;
+
 		m_nodes = myTree.getLength();
+
+		newT = orderList.getEntry(orderList.getLength());
+		orderList.remove(myTree.getLength());
+		delete newT;
+		newT = nullptr;
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
 	}
@@ -86,10 +100,12 @@ void BinaryTree<T>::remove() {
 template <typename T>
 void BinaryTree<T>::preOrder() {
 	if (!isEmpty()) {
-		orderList.clear();
+		tempNodes = 0;
 		int i = 1;
 		int k = i * 2;
-		orderList.insert(i, myTree.getEntry(i));
+		orderList.getEntry(tempNodes + 1)->setTitle(myTree.getEntry(i)->getTitle());
+		orderList.getEntry(tempNodes + 1)->setRating(myTree.getEntry(i)->getRating());
+		tempNodes++;
 		preOrderRec(k);
 		preOrderRec(k + 1);
 	} else {
@@ -101,7 +117,9 @@ template <typename T>
 void BinaryTree<T>::preOrderRec(int i) {
 	if(i <= myTree.getLength()) {
 		int k = i *2;
-		orderList.insert(i, myTree.getEntry(i));
+		orderList.getEntry(tempNodes + 1)->setTitle(myTree.getEntry(i)->getTitle());
+		orderList.getEntry(tempNodes + 1)->setRating(myTree.getEntry(i)->getRating());
+		tempNodes++;
 		preOrderRec(k);
 		preOrderRec(k + 1);
 	}
@@ -110,11 +128,13 @@ void BinaryTree<T>::preOrderRec(int i) {
 template <typename T>
 void BinaryTree<T>::inOrder() {
 	if (!isEmpty()) {
-		orderList.clear();
+		tempNodes = 0;
 		int i = 1;
 		int k = i * 2;
 		inOrderRec(k);
-		orderList.insert(i, myTree.getEntry(i));
+		orderList.getEntry(tempNodes + 1)->setTitle(myTree.getEntry(i)->getTitle());
+		orderList.getEntry(tempNodes + 1)->setRating(myTree.getEntry(i)->getRating());
+		tempNodes++;
 		inOrderRec(k + 1);
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
@@ -126,7 +146,9 @@ void BinaryTree<T>::inOrderRec(int i) {
 	if(i <= myTree.getLength()) {
 		int k = i *2;
 		inOrderRec(k);
-		orderList.insert(i, myTree.getEntry(i));
+		orderList.getEntry(tempNodes + 1)->setTitle(myTree.getEntry(i)->getTitle());
+		orderList.getEntry(tempNodes + 1)->setRating(myTree.getEntry(i)->getRating());
+		tempNodes++;
 		inOrderRec(k + 1);
 	}
 }
@@ -134,12 +156,14 @@ void BinaryTree<T>::inOrderRec(int i) {
 template <typename T>
 void BinaryTree<T>::postOrder() {
 	if (!isEmpty()) {
-		orderList.clear();
+		tempNodes = 0;
 		int i = 1;
 		int k = i * 2;
 		postOrderRec(k);
 		postOrderRec(k + 1);
-		orderList.insert(i, myTree.getEntry(i));
+		orderList.getEntry(tempNodes + 1)->setTitle(myTree.getEntry(i)->getTitle());
+		orderList.getEntry(tempNodes + 1)->setRating(myTree.getEntry(i)->getRating());
+		tempNodes++;
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
 	}
@@ -151,16 +175,19 @@ void BinaryTree<T>::postOrderRec(int i) {
 		int k = i *2;
 		postOrderRec(k);
 		postOrderRec(k + 1);
-		orderList.insert(i, myTree.getEntry(i));
+		orderList.getEntry(tempNodes + 1)->setTitle(myTree.getEntry(i)->getTitle());
+		orderList.getEntry(tempNodes + 1)->setRating(myTree.getEntry(i)->getRating());
+		tempNodes++;
 	}
 }
 
 template <typename T>
 void BinaryTree<T>::levelOrder() {
 	if (!isEmpty()) {
-		orderList.clear();
-		for (int i = 1; i <= myTree.getLength(); i++)
-			orderList.insert(i, myTree.getEntry(i));
+		for (int i = 1; i <= myTree.getLength(); i++) {
+			orderList.getEntry(i)->setTitle(myTree.getEntry(i)->getTitle());
+			orderList.getEntry(i)->setRating(myTree.getEntry(i)->getRating());
+		}
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
 	}

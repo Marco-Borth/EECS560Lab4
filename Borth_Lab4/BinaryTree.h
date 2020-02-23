@@ -12,6 +12,7 @@
 #define BINARY_TREE_H
 
 #include "LinkedList.h"
+#include "Movie.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -24,6 +25,9 @@ private:
   LinkedList<T> myTree;
   LinkedList<T> orderList;
   int m_nodes;
+
+  Movie* newT;
+  int tempNodes;
 
   void preOrderRec(int i);
 

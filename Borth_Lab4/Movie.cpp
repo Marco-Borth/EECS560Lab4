@@ -14,7 +14,7 @@ using namespace std;
 
 Movie::Movie() {
   title = "\0";
-  rating = 0;
+  rating = 0.0;
 }
 
 Movie::Movie(const Movie &other) {
