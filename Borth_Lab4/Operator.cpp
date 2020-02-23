@@ -36,34 +36,19 @@ void Operator::printCommands() {
   cout << "11- Exit\n\n> ";
 }
 
-void Operator::inputTitle(string parse) {
-  tagline = "\0";
-
-  for (int i = 0; i < parse.length(); i++) {
-    char ascii = parse.at(i);
-
-    if (int (ascii) >= 97 && int (ascii) <= 122)
-      tagline = tagline + parse.at(i);
-  }
-
-  if (tagline.length() < 1 && tagline.length() > 6 )
-    throw(runtime_error("ERROR! Invalid Username Length.\n"));
-}
-
 void Operator::parseTitle(string parse) {
   tagline = "\0";
 
   for (int i = 0; i < parse.length(); i++) {
-    char ascii = parse.at(i);
-
-    if (int (ascii) >= 97 && int (ascii) <= 122)
+    if (parse.at(i) < parse.length() - 1 && parse.at(i) == ',')
       tagline = tagline + parse.at(i);
-    else
-      throw(runtime_error("ERROR! Special Characters Inserted.\n"));
+    else {
+      if (parse.at(i) == ',')
+        tagline = tagline;
+      else
+        tagline = tagline + parse.at(i);
+    }
   }
-
-  if (tagline.length() < 1 && tagline.length() > 6 )
-    throw(runtime_error("ERROR! Invalid Username Length.\n"));
 }
 
 void Operator::run() {
@@ -76,9 +61,8 @@ void Operator::run() {
   if (!inFile.is_open()) {
     cout << "File name not valid!\n\n";
   } else {
-    int MovieTitleInputFailures = 0;
     int RatingInputFailures = 0;
-    while (!inFile.eof( )) {
+    while (!inFile.eof()) {
       inFile >> tagline >> stars;
 
       if(inFile.fail()) {
@@ -86,26 +70,34 @@ void Operator::run() {
         inFile.ignore(numeric_limits<streamsize>::max(),'\n');
         RatingInputFailures++;
       } else {
-        try {
-          inputTitle(tagline);
-        } catch (runtime_error) {
-          MovieTitleInputFailures++;
-        }
+        parseTitle(tagline);
         review = stod(stars);
 
-        newMovie = new Movie(tagline, review);
-
-        try {
+        if(!IMDB.isEmpty()) {
+          newMovie = new Movie(tagline, review);
           IMDB.add(newMovie);
-        } catch (runtime_error) {
-          MovieTitleInputFailures++;
+
+          newMovie = new Movie(tagline, review);
+          IMDB.addTemp(newMovie);
+        } else {
+          bool isUnique = true;
+
+          for (int i = 1; i <= IMDB.getLength(); i++) {
+            if(tagline == IMDB.getEntry(i)->getTitle())
+              isUnique = false;
+          }
+
+          if(isUnique) {
+            newMovie = new Movie(tagline, review);
+            IMDB.add(newMovie);
+
+            newMovie = new Movie(tagline, review);
+            IMDB.addTemp(newMovie);
+          }
         }
 
       }
     }
-
-    if(MovieTitleInputFailures > 0)
-      cout << "ERROR! Invalid Input for Movie Titles Detected: " << MovieTitleInputFailures << "\n";
 
     if(RatingInputFailures > 1)
       cout << "ERROR! Invalid Input for Movie Ratings Detected: " << RatingInputFailures << "\n";
@@ -140,252 +132,91 @@ void Operator::run() {
         }
         // 2- AddMovie - Complete!
         else if (option == 2) {
-          /*
           cout << "\nPreparing to Insert a New Movie...\n";
 
-          cout << "\nEnter user details to be added:\n\n> ";
-          cin >> tagline >> pParse;
+          cout << "\nPlease enter the movie title which you want to enter into the tree:\n> ";
+          cin >> tagline;
+          cout << "\nPlease enter the rating of your movie:\n> ";
+          cin >> review;
 
           while(1) {
             if(cin.fail()) {
               cin.clear();
               cin.ignore(numeric_limits<streamsize>::max(),'\n');
               cout << "\n\nERROR! Invalid entry!\n\n";
-              cout << "\nEnter user details to be added:\n\n> ";
-              cin >> tagline >> pParse;
+              cout << "\nPlease enter the movie title which you want to enter into the tree:\n> ";
+              cin >> tagline;
+              cout << "\nPlease enter the rating of your movie:\n> ";
+              cin >> stars;
 
             } else {
-              bool beginInsert = true;
-              bool tempLinearPlaced = false;
-              bool tempQuadraticPlaced = false;
+              parseTitle(tagline);
+              review = stof(stars);
+
+              bool isInserted = false;
+              bool isUnique = true;
 
               try {
-                parseTitle(tagline);
+                if(!IMDB.isEmpty()) {
+                  newMovie = new Movie(tagline, review);
+                  IMDB.add(newMovie);
+
+                  newMovie = new Movie(tagline, review);
+                  IMDB.addTemp(newMovie);
+                } else {
+                  bool isUnique = true;
+
+                  for (int i = 1; i <= IMDB.getLength(); i++) {
+                    if(tagline == IMDB.getEntry(i)->getTitle())
+                      isUnique = false;
+                  }
+
+                  if(isUnique) {
+                    newMovie = new Movie(tagline, review);
+                    IMDB.add(newMovie);
+
+                    newMovie = new Movie(tagline, review);
+                    IMDB.addTemp(newMovie);
+                    isInserted = true;
+                  } else
+                    throw(std::runtime_error("ERROR: Movie Record is not unique.\n"));
+                }
               } catch (runtime_error) {
-                beginInsert = false;
-                tagline = "\0";
-                cout << "\nERROR! Invalid Username!\n\n";
-                cout << "\n Username must be no more than 6 characters in length.\n";
-                cout << "\n Username must not contain special characters (., * , ? ,@ ,#, etc.).\n";
-                cout << "\n Username must not contain have any capitalized characters (A, B, C, ..., Z).\n\n";
+                cout << "\n> Output: ERROR! cannot place record\n\n";
               }
 
-              try {
-                parsePassword(pParse);
-              } catch (runtime_error) {
-                beginInsert = false;
-                pword = "\0";
-                cout << "\nERROR! Invalid Password!\n\n";
-                cout << "\n Password must be no more than 7 characters in length.\n";
-                cout << "\n Password must not contain special characters (., * , ? ,@ ,#, etc.).\n";
-                cout << "\n Password must not contain have any capitalized characters (A, B, C, ..., Z).\n";
-                cout << "\n Password must contain at least 2 numbers and 3 characters.\n\n";
-              }
-
-              if (beginInsert) {
-                cout << "\nInserting New User into the records...\n\n";
-
-                try {
-                  insertRecord("LinearTable");
-                  tempLinearPlaced = placedLinear;
-                } catch (runtime_error) {
-                  cout << "ERROR! Username Already Exists.\n\n";
-                }
-                cout << "Linear Probing:\n";
-                if(placedLinear)
-                  cout << "Record successfully inserted\n\n";
-                else
-                  cout << "ERROR! cannot place record\n\n";
-
-                try {
-                  insertRecord("QuadraticTable");
-                  tempQuadraticPlaced = placedQuadratic;
-                } catch (runtime_error) {
-                  cout << "ERROR! Username Already Exists.\n\n";
-                }
-                cout << "Quadratic Probing:\n";
-                if(placedQuadratic)
-                  cout << "Record successfully inserted\n\n";
-                else
-                  cout << "ERROR! cannot place record\n\n";
-
-                int linearNumOfRecords = 0;
-
-                for (int i = 1; i <= hashTableLength; i++) {
-                  if(LinearTable.getEntry(i)->getUsername() != "\0" && LinearTable.getEntry(i)->getPassword() != "\0")
-                    linearNumOfRecords++;
-                }
-
-                if (linearNumOfRecords > hashTableLoadFactor) {
-                  string temptagline = tagline;
-                  string tempPword = pword;
-                  rehashTables();
-
-                  parseTitle(temptagline);
-                  parsePassword(tempPword);
-
-                  if (tempLinearPlaced) {
-                    try {
-                      insertRecord("LinearTable");
-                    } catch (runtime_error) {
-
-                    }
-                  }
-
-                  if (tempQuadraticPlaced) {
-                    try {
-                      insertRecord("QuadraticTable");
-                    } catch (runtime_error) {
-
-                    }
-                  }
-                }
-
-                int quadraticNumOfRecords = 0;
-
-                for (int i = 1; i <= hashTableLength; i++) {
-                  if(QuadraticTable.getEntry(i)->getUsername() != "\0" && QuadraticTable.getEntry(i)->getPassword() != "\0")
-                    quadraticNumOfRecords++;
-                }
-
-                if (quadraticNumOfRecords > hashTableLoadFactor) {
-                  string temptagline = tagline;
-                  string tempPword = pword;
-                  rehashTables();
-
-                  parseTitle(temptagline);
-                  parsePassword(tempPword);
-
-                  if (tempLinearPlaced) {
-                    try {
-                      insertRecord("LinearTable");
-                    } catch (runtime_error) {
-
-                    }
-                  }
-
-                  if (tempQuadraticPlaced) {
-                    try {
-                      insertRecord("QuadraticTable");
-                    } catch (runtime_error) {
-
-                    }
-                  }
-                }
-              }
+              if (isInserted)
+                cout << "\n> Output: Record has been added successfully\n\n";
 
               break;
             }
           }
-          */
+
         }
-        // 2- RemoveMovie - Complete!
+        // 3- RemoveMovie - Complete!
         else if (option == 3) {
-          /*
-          cout << "\nPreparing to Delete a New Movie...\n";
+          try {
+            if(!IMDB.isEmpty()) {
+              cout << "\nPreparing to Delete a New Movie...\n";
 
-          cout << "\nEnter user and password to be removed:\n\n> ";
-          cin >> tagline >> pParse;
+              tagline = IMDB.getEntry(IMDB.getLength())->getTitle();
+              review = IMDB.getEntry(IMDB.getLength())->getRating();
+              IMDB.remove();
 
-          while(1) {
-            if(cin.fail()) {
-              cin.clear();
-              cin.ignore(numeric_limits<streamsize>::max(),'\n');
-              cout << "\n\nERROR! Invalid entry!\n\n";
-              cout << "\nEnter user and password to be removed:\n\n> ";
-              cin >> tagline >> pParse;
+              IMDB.removeTemp();
+              cout << "Record successfully removed\n\n";
+                cout << "The last movie with title " << tagline << " and rating " << review << " has been deleted.\n\n";
 
-            } else {
-              bool beginRemove = true;
-
-              try {
-                parseTitle(tagline);
-              } catch (runtime_error) {
-                beginRemove = false;
-                tagline = "\0";
-                cout << "\nERROR! Invalid Username!\n\n";
-                cout << "\n Username must be no more than 6 characters in length.\n";
-                cout << "\n Username must not contain special characters (., * , ? ,@ ,#, etc.).\n";
-                cout << "\n Username must not contain have any capitalized characters (A, B, C, ..., Z).\n\n";
-              }
-
-              try {
-                parsePassword(pParse);
-              } catch (runtime_error) {
-                beginRemove = false;
-                pword = "\0";
-                cout << "\nERROR! Invalid Password!\n\n";
-                cout << "\n Password must be no more than 7 characters in length.\n";
-                cout << "\n Password must not contain special characters (., * , ? ,@ ,#, etc.).\n";
-                cout << "\n Password must not contain have any capitalized characters (A, B, C, ..., Z).\n";
-                cout << "\n Password must contain at least 2 numbers and 3 characters.\n\n";
-              }
-
-              if (beginRemove) {
-                try {
-                  cout << "\nDeleting Defined User from the records...\n\n";
-
-                  hashValue = hashKey(pword);
-
-                  placedLinear = false;
-                  int index = hashValue % hashTableLength;
-                  int position = 0;
-
-                  while(!placedLinear && position < LinearTable.getLength()) {
-                    if(LinearTable.getEntry(index + 1)->getUsername() == tagline &&
-                       LinearTable.getEntry(index + 1)->getPassword() == pword) {
-                      placedLinear = true;
-                      LinearTable.getEntry(index + 1)->setUsername("\0");
-                      LinearTable.getEntry(index + 1)->setPassword("\0");
-                      //newUser = new User();
-                      //LinearTable.replace(index + 1, newUser);
-                    } else {
-                      index++;
-                      position++;
-                      index = index % hashTableLength;
-                    }
-                  }
-
-                  cout << "Linear Probing:\n";
-                  if(placedLinear)
-                    cout << "Record successfully removed\n\n";
-                  else
-                    cout << "ERROR! cannot remove record\n\n";
-
-                  placedQuadratic = false;
-                  index = hashValue % hashTableLength;
-                  position = 0;
-                  int exponent = position;
-
-                  while(!placedQuadratic && position < QuadraticTable.getLength()) {
-                    if(QuadraticTable.getEntry(index + 1)->getUsername() == tagline &&
-                       QuadraticTable.getEntry(index + 1)->getPassword() == pword) {
-                      placedQuadratic = true;
-                      QuadraticTable.getEntry(index + 1)->setUsername("\0");
-                      QuadraticTable.getEntry(index + 1)->setPassword("\0");
-                      //newUser = new User();
-                      //QuadraticTable.replace(index + 1, newUser);
-                    } else {
-                      position++;
-                      exponent = position^2;
-                      index = ( (index % hashTableLength) + exponent ) % hashTableLength;
-                    }
-                  }
-
-                  cout << "Quadratic Probing:\n";
-                  if(placedQuadratic)
-                    cout << "Record successfully removed\n\n";
-                  else
-                    cout << "ERROR! cannot remove record\n\n";
-                } catch (runtime_error) {
-                  cout << "\nERROR! Invalid Position!\n\n";
-                }
-              }
-
-              break;
-            }
+            } else
+              cout << "\n> Output: ERROR! Tree is Empty.\n\n";
+          } catch (runtime_error) {
+            cout << "\n> Output: ERROR! Tree is Empty.\n\n";
           }
-          */
+
+        }
+        // 6- TreeHeight - Complete!
+        else if (option == 6) {
+
         }
         // 7- Postorder - Complete!
         else if (option == 7) {

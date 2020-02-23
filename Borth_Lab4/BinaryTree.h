@@ -56,6 +56,21 @@ public:
 
 /*
 * @pre none.
+* @post getLength returns m_length of myTree.
+*/
+  int getLength() const;
+
+/*
+* @pre none.
+* @param position: must be between 1 and m_length of myTree.
+* @post getEntry returns Node entry at the given position.
+* @throw runtime_error if the postion is invalid.
+* @throw runtime_error if myTree isEmpty.
+*/
+   T getEntry(int position) const;
+
+/*
+* @pre none.
 * @post isEmpty returns false if m_size > 0, returns true otherwise.
 */
   bool isFull() const;
@@ -80,12 +95,16 @@ public:
 */
   void add(T data);
 
+  void addTemp(T data);
+
 /*
 * @pre none.
 * @post removes the BinaryNode from myTree in levelOrder.
 * @post if BinaryNode is not the root node, calls removeRec.
 */
   void remove(); //Can throw std::runtime_error
+
+  void removeTemp();
 
 /*
 * @pre none.

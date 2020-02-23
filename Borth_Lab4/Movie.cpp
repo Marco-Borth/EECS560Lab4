@@ -4,7 +4,7 @@
 * Author: Marco Borth
 * Assignment:   EECS-560 Lab 4 – Implementation of Binary Tree
 * Description:  Movie set and get methods defined here.
-* Date: 2/11/20
+* Date: 2/22/20
 *
 ---------------------------------------------------------------------------- */
 
@@ -24,9 +24,9 @@ Movie::Movie(const Movie &other) {
 
 Movie::~Movie(){}
 
-Movie::Movie(string alias, int stars) {
+Movie::Movie(string alias, double stars) {
   title = alias;
-  rating = stars;
+  setRating(stars);
 }
 
 void Movie::setTitle(string alias) {
@@ -37,8 +37,9 @@ string Movie::getTitle() const {
   return(title);
 }
 
-void Movie::setRating(int stars) {
-  rating = stars;
+void Movie::setRating(double stars) {
+  if(stars >= 0 && stars <= 5)
+    rating = stars;
 }
 
 double Movie::getRating() const {

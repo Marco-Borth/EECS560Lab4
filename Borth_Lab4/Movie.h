@@ -40,7 +40,7 @@ public:
 * @param stars must be a valid int value.
 * @post rating is set to stars.
 */
-  void setRating(int stars);
+  void setRating(double stars);
 
 /*
 * @pre none.
@@ -54,6 +54,6 @@ public:
 
   Movie(const Movie &other);
 
-  Movie(string alias, int stars);
+  Movie(string alias, double stars);
 };
 #endif

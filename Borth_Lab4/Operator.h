@@ -27,7 +27,7 @@ private:
   string stars;
 
   string tagline;
-  double review;
+  float review;
 
   BinaryTree<Movie*> IMDB;
 
@@ -45,8 +45,6 @@ public:
 * @post prints list of commands to display for the user.
 */
   void printCommands();
-
-  void inputTitle(string parse);
 
   void parseTitle(string parse);
 

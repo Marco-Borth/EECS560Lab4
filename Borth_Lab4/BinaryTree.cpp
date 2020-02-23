@@ -24,6 +24,16 @@ bool BinaryTree<T>::isEmpty() const {
 }
 
 template <typename T>
+T BinaryTree<T>::getEntry(int position) const {
+	return myTree.getEntry(position);
+}
+
+template <typename T>
+int BinaryTree<T>::getLength() const {
+	return myTree.getLength();
+}
+
+template <typename T>
 bool BinaryTree<T>::isFull() const {
 	int h = getHeight();
 	int maxNodes = 2 ^(h+1) - 1;
@@ -54,12 +64,11 @@ template <typename T>
 void BinaryTree<T>::add(T data) {
 	myTree.insert(myTree.getLength() + 1, data);
 	m_nodes = myTree.getLength();
+}
 
-	newT = new Movie();
-	newT->setTitle(myTree.getEntry(myTree.getLength())->getTitle());
-	newT->setRating(myTree.getEntry(myTree.getLength())->getRating());
-	orderList.insert(orderList.getLength() + 1, newT);
-	newT = nullptr;
+template <typename T>
+void BinaryTree<T>::addTemp(T data) {
+	orderList.insert(orderList.getLength() + 1, data);
 }
 
 template <typename T>
@@ -74,8 +83,8 @@ void BinaryTree<T>::print() {
 
 template <typename T>
 void BinaryTree<T>::clear() {
-	if (!isEmpty())
-		myTree.clear();
+	while (!isEmpty())
+		remove();
 	m_nodes = myTree.getLength();
 }
 
@@ -85,11 +94,19 @@ void BinaryTree<T>::remove() {
 		newT = myTree.getEntry(orderList.getLength());
 		myTree.remove(myTree.getLength());
 		delete newT;
+		newT = nullptr;
 
 		m_nodes = myTree.getLength();
+	} else {
+		throw(std::runtime_error("ERROR: Tree is empty.\n"));
+	}
+}
 
+template <typename T>
+void BinaryTree<T>::removeTemp() {
+	if (!orderList.isEmpty()) {
 		newT = orderList.getEntry(orderList.getLength());
-		orderList.remove(myTree.getLength());
+		orderList.remove(orderList.getLength());
 		delete newT;
 		newT = nullptr;
 	} else {
