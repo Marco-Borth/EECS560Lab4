@@ -13,6 +13,7 @@
 
 #include "LinkedList.h"
 #include "Movie.h"
+#include <math.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -114,6 +115,8 @@ public:
 
   void print();
 
+  void printLeaves();
+
   void preOrder();
 
   void inOrder();
@@ -121,6 +124,8 @@ public:
   void postOrder();
 
   void levelOrder();
+
+  bool isALeaf(int i);
 };
 
 #include "BinaryTree.cpp"

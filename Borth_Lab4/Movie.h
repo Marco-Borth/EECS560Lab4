@@ -19,7 +19,7 @@ class Movie
 {
 private:
   string title;
-  double rating;
+  float rating;
 
 public:
 /*
@@ -40,13 +40,13 @@ public:
 * @param stars must be a valid int value.
 * @post rating is set to stars.
 */
-  void setRating(double stars);
+  void setRating(float stars);
 
 /*
 * @pre none.
 * @post return rating.
 */
-  double getRating() const;
+  float getRating() const;
 
   Movie();
 
@@ -54,6 +54,6 @@ public:
 
   Movie(const Movie &other);
 
-  Movie(string alias, double stars);
+  Movie(string alias, float stars);
 };
 #endif

@@ -71,7 +71,7 @@ void Operator::run() {
         RatingInputFailures++;
       } else {
         parseTitle(tagline);
-        review = stod(stars);
+        review = stof(stars);
 
         if(!IMDB.isEmpty()) {
           newMovie = new Movie(tagline, review);
@@ -123,7 +123,7 @@ void Operator::run() {
       else {
         // 1. Is Empty - Complete!
         if (option == 1) {
-          cout << "\nIs Binary Tree is: ";
+          cout << "\nBinary Tree is: ";
           if(IMDB.isFull()) {
             cout << "Full!\n\n";
           } else {
@@ -151,7 +151,6 @@ void Operator::run() {
 
             } else {
               parseTitle(tagline);
-              review = stof(stars);
 
               bool isInserted = false;
               bool isUnique = true;
@@ -214,9 +213,52 @@ void Operator::run() {
           }
 
         }
+        // 4- Leaf - Complete!
+        else if (option == 4) {
+          cout << "\nPlease enter the name of your movie which you want to test as a leaf node:\n> ";
+          cin >> tagline;
+
+          while(1) {
+            if(cin.fail()) {
+              cin.clear();
+              cin.ignore(numeric_limits<streamsize>::max(),'\n');
+              cout << "\n\nERROR! Invalid entry!\n\n";
+              cout << "\nPlease enter the name of your movie which you want to test as a leaf node:\n> ";
+              cin >> tagline;
+
+            } else {
+              parseTitle(tagline);
+
+              int index = 1;
+              bool isFound = false;
+
+              for (int i = 1; i <= IMDB.getLength(); i++) {
+                if(IMDB.getEntry(i)->getTitle() == tagline) {
+                  index = i;
+                  isFound = true;
+                }
+              }
+
+              if (isFound) {
+                if(IMDB.isALeaf(index))
+                  cout << "\n>Output:The record with movie title " << tagline << " is a leaf node.\n\n";
+                else
+                  cout << "\n>Output:The record with movie title " << tagline << " is NOT a leaf node.\n\n";
+              } else
+                cout << "\nERROR! Movie not found in Tree.\n\n";
+
+              break;
+            }
+          }
+        }
+        // 5- PrintLeaves - Complete!
+        else if (option == 5) {
+          cout << "\nOutput:  The leaf nodes are: ";
+          IMDB.printLeaves();
+        }
         // 6- TreeHeight - Complete!
         else if (option == 6) {
-
+          cout << "\nOutput: The height of the tree is " << IMDB.getHeight() << "\n\n";
         }
         // 7- Postorder - Complete!
         else if (option == 7) {

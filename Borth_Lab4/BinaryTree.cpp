@@ -35,13 +35,22 @@ int BinaryTree<T>::getLength() const {
 
 template <typename T>
 bool BinaryTree<T>::isFull() const {
-	int h = getHeight();
-	int maxNodes = 2 ^(h+1) - 1;
+	if(!isEmpty()) {
+		int height = 0;
 
-	if(myTree.getLength() == maxNodes)
-		return true;
-	else
+		while (pow(2.0, height) <= myTree.getLength())
+			height++;
+
+		int maxNodes = 0;
+		maxNodes = pow(2.0, height) - 1;
+
+		if(myTree.getLength() == maxNodes)
+			return true;
+		else
+			return false;
+	} else {
 		return false;
+	}
 }
 
 template <typename T>
@@ -52,12 +61,17 @@ int BinaryTree<T>::getNumberOfNodes() const {
 
 template <typename T>
 int BinaryTree<T>::getHeight() const {
-	int height = 0;
+	if(myTree.getLength() > 1) {
+		int height = 0;
 
-	while (2 * height < myTree.getLength() - 1)
-		height++;
+		while (pow(2.0, height) <= myTree.getLength())
+			height++;
 
-	return height;
+		height--;
+		return height;
+	} else {
+		return 0;
+	}
 }
 
 template <typename T>
@@ -208,4 +222,32 @@ void BinaryTree<T>::levelOrder() {
 	} else {
 		throw(std::runtime_error("ERROR: Tree is empty.\n"));
 	}
+}
+
+template <typename T>
+bool BinaryTree<T>::isALeaf(int i) {
+	if (!isEmpty()) {
+		if (i <= myTree.getLength()) {
+			int k = i * 2;
+			if(k <= myTree.getLength() || (k + 1) <= myTree.getLength())
+				return false;
+			else
+				return true;
+		}
+	} else {
+		throw(std::runtime_error("ERROR: Tree is empty.\n"));
+	}
+}
+
+template <typename T>
+void BinaryTree<T>::printLeaves() {
+	levelOrder();
+	for(int i = 1; i <= orderList.getLength(); i++) {
+		if(isALeaf(i)) {
+			cout << orderList.getEntry(i)->getTitle();
+			if(i != orderList.getLength())
+				cout << ", ";
+		}
+	}
+	cout << "\n\n";
 }

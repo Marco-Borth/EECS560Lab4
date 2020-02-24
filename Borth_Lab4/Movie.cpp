@@ -24,7 +24,7 @@ Movie::Movie(const Movie &other) {
 
 Movie::~Movie(){}
 
-Movie::Movie(string alias, double stars) {
+Movie::Movie(string alias, float stars) {
   title = alias;
   setRating(stars);
 }
@@ -37,11 +37,11 @@ string Movie::getTitle() const {
   return(title);
 }
 
-void Movie::setRating(double stars) {
+void Movie::setRating(float stars) {
   if(stars >= 0 && stars <= 5)
     rating = stars;
 }
 
-double Movie::getRating() const {
+float Movie::getRating() const {
   return(rating);
 }
